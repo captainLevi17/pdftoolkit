@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Toolkit</title>
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/output.css">
+  <style>
+    /* Fallback styles in case Tailwind doesn't load */
+    body { 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    .tool-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    .tool-card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="container mx-auto px-4 py-8">
+    <header class="mb-8 text-center">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">PDF Toolkit</h1>
+      <p class="text-gray-600 dark:text-gray-400">Your all-in-one PDF manipulation tool</p>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Tool Cards -->
+      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div class="text-4xl mb-4">📄</div>
+        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Merge PDFs</h2>
+        <p class="text-gray-600 dark:text-gray-400">Combine multiple PDFs into a single file</p>
+      </div>
+
+      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div class="text-4xl mb-4">✂️</div>
+        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Split PDF</h2>
+        <p class="text-gray-600 dark:text-gray-400">Extract pages or split by page numbers</p>
+      </div>
+
+      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div class="text-4xl mb-4">🗜️</div>
+        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Compress PDF</h2>
+        <p class="text-gray-600 dark:text-gray-400">Reduce PDF file size while preserving quality</p>
+      </div>
+
+      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div class="text-4xl mb-4">🖼️</div>
+        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">PDF to JPG</h2>
+        <p class="text-gray-600 dark:text-gray-400">Convert PDF pages to high-quality images</p>
+      </div>
+
+      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div class="text-4xl mb-4">📝</div>
+        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">JPG to PDF</h2>
+        <p class="text-gray-600 dark:text-gray-400">Convert images to a single PDF document</p>
+      </div>
+
+      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div class="text-4xl mb-4">📑</div>
+        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">PDF to Word</h2>
+        <p class="text-gray-600 dark:text-gray-400">Convert PDF files to editable Word documents</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="mt-12 text-center text-gray-600 dark:text-gray-400 text-sm">
+    <p>PDF Toolkit v1.0.0</p>
+    <p class="mt-1">© 2025 All Rights Reserved</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>
