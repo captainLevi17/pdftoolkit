@@ -26,50 +26,59 @@
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-900">
-  <div class="container mx-auto px-4 py-8">
-    <header class="mb-8 text-center">
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">PDF Toolkit</h1>
-      <p class="text-gray-600 dark:text-gray-400">Your all-in-one PDF manipulation tool</p>
-    </header>
+  <!-- App Container -->
+  <div id="app" class="min-h-screen">
+    <!-- Home View (initially visible) -->
+    <div id="home-view" class="container mx-auto px-4 py-8">
+      <header class="mb-8 text-center">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">PDF Toolkit</h1>
+        <p class="text-gray-600 dark:text-gray-400">Your all-in-one PDF manipulation tool</p>
+      </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Tool Cards -->
-      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-        <div class="text-4xl mb-4">📄</div>
-        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Merge PDFs</h2>
-        <p class="text-gray-600 dark:text-gray-400">Combine multiple PDFs into a single file</p>
-      </div>
+      <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Tool Cards -->
+        <div id="merge-pdf" class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <div class="text-4xl mb-4">📄</div>
+          <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Merge PDFs</h2>
+          <p class="text-gray-600 dark:text-gray-400">Combine multiple PDFs into a single file</p>
+        </div>
 
-      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-        <div class="text-4xl mb-4">✂️</div>
-        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Split PDF</h2>
-        <p class="text-gray-600 dark:text-gray-400">Extract pages or split by page numbers</p>
-      </div>
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <div class="text-4xl mb-4">✂️</div>
+          <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Split PDF</h2>
+          <p class="text-gray-600 dark:text-gray-400">Extract pages or split by page numbers</p>
+        </div>
 
-      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-        <div class="text-4xl mb-4">🗜️</div>
-        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Compress PDF</h2>
-        <p class="text-gray-600 dark:text-gray-400">Reduce PDF file size while preserving quality</p>
-      </div>
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <div class="text-4xl mb-4">🗜️</div>
+          <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Compress PDF</h2>
+          <p class="text-gray-600 dark:text-gray-400">Reduce PDF file size while preserving quality</p>
+        </div>
 
-      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-        <div class="text-4xl mb-4">🖼️</div>
-        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">PDF to JPG</h2>
-        <p class="text-gray-600 dark:text-gray-400">Convert PDF pages to high-quality images</p>
-      </div>
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <div class="text-4xl mb-4">🖼️</div>
+          <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">PDF to JPG</h2>
+          <p class="text-gray-600 dark:text-gray-400">Convert PDF pages to high-quality images</p>
+        </div>
 
-      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-        <div class="text-4xl mb-4">📝</div>
-        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">JPG to PDF</h2>
-        <p class="text-gray-600 dark:text-gray-400">Convert images to a single PDF document</p>
-      </div>
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <div class="text-4xl mb-4">📝</div>
+          <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">JPG to PDF</h2>
+          <p class="text-gray-600 dark:text-gray-400">Convert images to a single PDF document</p>
+        </div>
 
-      <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-        <div class="text-4xl mb-4">📑</div>
-        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">PDF to Word</h2>
-        <p class="text-gray-600 dark:text-gray-400">Convert PDF files to editable Word documents</p>
-      </div>
-    </main>
+        <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <div class="text-4xl mb-4">📑</div>
+          <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">PDF to Word</h2>
+          <p class="text-gray-600 dark:text-gray-400">Convert PDF files to editable Word documents</p>
+        </div>
+      </main>
+    </div>
+    
+    <!-- Tool Views (initially hidden) -->
+    <div id="tool-views" class="hidden">
+      <!-- PDF Merger View will be inserted here by JavaScript -->
+    </div>
   </div>
 
   <footer class="mt-12 text-center text-gray-600 dark:text-gray-400 text-sm">

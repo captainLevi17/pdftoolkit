@@ -24,8 +24,13 @@
 
 ---
 
-## 🚧 Phase 3: Build Core PDF Features (AI-Assisted)
-- [ ] Implement PDF Merger (using `pdf-lib`)
+## ✅ Phase 3: Build Core PDF Features (AI-Assisted)
+- [x] Implement PDF Merger (using `pdf-lib`)
+  - [x] Drag-and-drop file upload
+  - [x] File reordering and removal
+  - [x] Progress tracking
+  - [x] Error handling
+  - [x] Open merged PDF directly
 - [ ] Build PDF Splitter (extract selected pages)
 - [ ] Add PDF Compressor (optimize file size)
 - [ ] Create PDF to JPG converter
@@ -34,12 +39,15 @@
 
 ---
 
-## 🚧 Phase 4: UI Integration & User Experience
-- [ ] Connect all buttons to their functions
-- [ ] Add file pickers (multi-file and single-file)
-- [ ] Display progress bar or loader
-- [ ] Show error/success alerts
+## ✅ Phase 4: UI Integration & User Experience (PDF Merger)
+- [x] Connect PDF Merger button to its function
+- [x] Add file picker with multi-file support
+- [x] Implement drag-and-drop file upload
+- [x] Display progress bar during merge
+- [x] Show success/error alerts with feedback
+- [x] Add "Open File" button for merged PDFs
 - [ ] Save last-used folders or settings
+- [ ] Add file preview thumbnails (future enhancement)
 
 ---
 

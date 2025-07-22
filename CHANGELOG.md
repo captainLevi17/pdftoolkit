@@ -5,13 +5,23 @@ All notable changes to the PDF Toolkit project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2025-07-22
 ### Added
+- PDF Merger feature with drag-and-drop support
+- File selection and reordering interface
+- Progress tracking during PDF merging
+- Success/error notifications with user feedback
+- "Open File" button to view merged PDFs
 - Secure IPC communication between main and renderer processes
 - Preload script for safe API exposure
 - Error handling and logging system
 - Theme support (light/dark mode)
 - Development tools integration
+
+### Fixed
+- Resolved IPC channel whitelisting issues
+- Fixed module loading in renderer process
+- Improved error handling for file operations
 
 ### Changed
 - Updated Electron configuration for better security
