@@ -5,9 +5,11 @@ const toolViews = document.getElementById('tool-views');
 
 // Import components using dynamic import
 let PDFMerger;
+let PDFSplitter;
 
 // Navigation state
 let currentView = 'home';
+let currentTool = null;
 
 // Theme toggle functionality
 function initTheme() {
@@ -23,6 +25,39 @@ function initTheme() {
   }
 }
 
+// Initialize the PDF Splitter UI
+async function initPDFSplitter() {
+  try {
+    // Dynamically import the PDFSplitter component
+    const PDFSplitterModule = await import('./components/PDFSplitter.js');
+    PDFSplitter = PDFSplitterModule.default;
+    
+    // Create PDF Splitter instance and get its element
+    const pdfSplitter = new PDFSplitter();
+    const pdfSplitterElement = pdfSplitter.render();
+    
+    // Set current tool
+    currentTool = 'split';
+    
+    // Clear any existing content and append the PDF Splitter UI
+    toolViews.innerHTML = '';
+    toolViews.appendChild(pdfSplitterElement);
+    
+    // Add back button
+    addBackButton();
+    
+    // Add theme toggle if it exists
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      toolViews.appendChild(themeToggle);
+    }
+    
+  } catch (error) {
+    console.error('Error initializing PDF Splitter:', error);
+    alert('Failed to load PDF Splitter. Please check the console for details.');
+  }
+}
+
 // Initialize the PDF Merger UI
 async function initPDFMerger() {
   try {
@@ -34,16 +69,15 @@ async function initPDFMerger() {
     const pdfMerger = new PDFMerger();
     const pdfMergerElement = pdfMerger.render();
     
+    // Set current tool
+    currentTool = 'merge';
+    
     // Clear any existing content and append the PDF Merger UI
     toolViews.innerHTML = '';
     toolViews.appendChild(pdfMergerElement);
     
     // Add back button
-    const backButton = document.createElement('button');
-    backButton.className = 'fixed top-4 left-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors';
-    backButton.innerHTML = '← Back to Home';
-    backButton.addEventListener('click', showHomeView);
-    toolViews.insertBefore(backButton, toolViews.firstChild);
+    addBackButton();
     
     // Add theme toggle if it exists
     const themeToggle = document.getElementById('themeToggle');
@@ -88,53 +122,75 @@ function showHomeView() {
 }
 
 // Show tool view
-function showToolView(toolName) {
-  homeView.classList.add('hidden');
-  toolViews.classList.remove('hidden');
-  currentView = toolName;
-  document.title = `${toolName} | PDF Toolkit`;
-  
-  // Initialize the specific tool if needed
-  if (toolName === 'merge-pdf') {
-    initPDFMerger();
+async function showToolView(toolName) {
+  try {
+    currentView = 'tool';
+    homeView.classList.add('hidden');
+    toolViews.classList.remove('hidden');
+    
+    // Initialize the appropriate tool
+    if (toolName.toLowerCase() === 'merge pdf' || toolName === 'merge') {
+      await initPDFMerger();
+    } else if (toolName.toLowerCase() === 'split pdf' || toolName === 'split') {
+      await initPDFSplitter();
+    }
+    // Add other tool initializations here
+    
+  } catch (error) {
+    console.error(`Error showing ${toolName} view:`, error);
+    alert(`Failed to load ${toolName} tool. Please try again.`);
+    showHomeView();
   }
 }
 
+// Add back button to tool view
+function addBackButton() {
+  const backButton = document.createElement('button');
+  backButton.className = 'fixed top-4 left-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors';
+  backButton.innerHTML = '← Back to Home';
+  backButton.addEventListener('click', showHomeView);
+  toolViews.insertBefore(backButton, toolViews.firstChild);
+}
+
 // Initialize the app
-function init() {
-  console.log('Initializing app...');
-  
+async function init() {
   try {
+    // Initialize theme
     initTheme();
     
-    // Set up event listeners for tool cards
+    // Set up theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+    }
+    
+    // Set up navigation
     document.querySelectorAll('.tool-card').forEach(card => {
       card.addEventListener('click', () => {
-        const toolId = card.id || 'tool';
-        showToolView(toolId);
+        const toolName = card.id.replace('-', ' ');
+        showToolView(toolName);
       });
     });
     
-    // Check if electron API is available
-    if (window.electron) {
-      console.log('Electron API available, initializing IPC...');
-      
-      // Test the ping-pong IPC
-      window.electron.invoke('ping')
-        .then((response) => {
-          console.log('Ping successful! Response:', response);
-        })
-        .catch((error) => {
-          console.warn('Ping failed:', error.message);
-        });
-      
-    } else {
-      console.warn('Electron API not available, running in browser context?');
-      // Show a warning in the UI
-      const warning = document.createElement('div');
-      warning.className = 'fixed top-4 right-4 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 p-4 rounded-md';
-      warning.textContent = 'Running in browser mode. Some features may be limited.';
-      document.body.appendChild(warning);
+    // Set up back button
+    const backButton = document.getElementById('backButton');
+    if (backButton) {
+      backButton.addEventListener('click', showHomeView);
+    }
+    
+    // Initialize tools when their cards are clicked
+    const mergePdfCard = document.getElementById('merge-pdf');
+    if (mergePdfCard) {
+      mergePdfCard.addEventListener('click', async () => {
+        await showToolView('merge');
+      });
+    }
+    
+    const splitPdfCard = document.getElementById('split-pdf');
+    if (splitPdfCard) {
+      splitPdfCard.addEventListener('click', async () => {
+        await showToolView('split');
+      });
     }
     
     // Show home view by default

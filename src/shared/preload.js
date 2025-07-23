@@ -2,15 +2,21 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 // Whitelist of valid channels for IPC communication
 const validChannels = {
-  send: ['toMain', 'merge-progress'],
-  receive: ['fromMain', 'merge-progress'],
+  send: ['toMain', 'merge-progress', 'split-progress'],
+  receive: ['fromMain', 'merge-progress', 'split-progress'],
   invoke: [
     'ping',
     'show-save-dialog',
     'merge-pdfs',
     'show-error-dialog',
     'show-success-dialog',
-    'open-file'
+    'open-file',
+    'get-page-count',
+    'split-pdf',
+    'select-directory',
+    'save-file',
+    'get-preference',
+    'set-preference'
   ]
 };
 

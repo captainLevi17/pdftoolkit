@@ -5,6 +5,19 @@ All notable changes to the PDF Toolkit project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-07-23
+### Added
+- PDF Splitter feature with page range selection
+- Support for extracting single pages, page ranges, or all pages
+- Drag-and-drop file upload for PDF splitting
+- Progress tracking during PDF splitting
+- Enhanced success/error notifications with smooth animations
+- Output directory selection for saving split PDF files
+- Persistent storage of user's preferred output directory
+- Improved error handling and user feedback
+- Support for both main process and client-side PDF processing
+- Fallback mechanism for PDF processing when main process is unavailable
+
 ## [0.3.0] - 2025-07-22
 ### Added
 - PDF Merger feature with drag-and-drop support

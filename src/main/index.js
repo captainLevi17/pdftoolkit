@@ -106,6 +106,76 @@ function setupIpcHandlers() {
   // Test IPC handler
   ipcMain.handle('ping', () => 'pong');
   
+  // Get page count of a PDF
+  ipcMain.handle('get-page-count', async (event, arrayBuffer) => {
+    try {
+      const uint8Array = new Uint8Array(arrayBuffer);
+      const pdfDoc = await PDFDocument.load(uint8Array, {
+        ignoreEncryption: true,
+        throwOnInvalidObject: false,
+        updateMetadata: false
+      });
+      return pdfDoc.getPageCount();
+    } catch (error) {
+      console.error('Error getting page count:', error);
+      throw new Error('Failed to get page count. The file might be corrupted or in an unsupported format.');
+    }
+  });
+  
+  // Split a PDF
+  ipcMain.handle('split-pdf', async (event, { arrayBuffer, fromPage, toPage, splitType, filename }) => {
+    try {
+      const uint8Array = new Uint8Array(arrayBuffer);
+      const sourcePdf = await PDFDocument.load(uint8Array, {
+        ignoreEncryption: true,
+        throwOnInvalidObject: false,
+        updateMetadata: false
+      });
+      
+      const pageCount = sourcePdf.getPageCount();
+      
+      // Validate page range
+      fromPage = Math.max(1, Math.min(fromPage, pageCount));
+      toPage = Math.min(toPage, pageCount);
+      
+      // Create a new PDF document
+      const pdfDoc = await PDFDocument.create();
+      
+      // Determine which pages to copy
+      const pagesToCopy = [];
+      
+      if (splitType === 'all') {
+        // Copy all pages
+        for (let i = 0; i < pageCount; i++) {
+          pagesToCopy.push(i);
+        }
+      } else {
+        // Copy the specified range (1-based to 0-based conversion)
+        for (let i = fromPage - 1; i < toPage; i++) {
+          pagesToCopy.push(i);
+        }
+      }
+      
+      // Copy pages
+      const copiedPages = await pdfDoc.copyPages(sourcePdf, pagesToCopy);
+      
+      // Add pages to the new document
+      for (const page of copiedPages) {
+        pdfDoc.addPage(page);
+      }
+      
+      // Save the PDF
+      const pdfBytes = await pdfDoc.save();
+      
+      // Return the PDF data as an array for the renderer to handle
+      return Array.from(pdfBytes);
+      
+    } catch (error) {
+      console.error('Error splitting PDF:', error);
+      throw new Error('Failed to split PDF. The file might be corrupted or in an unsupported format.');
+    }
+  });
+  
   // Show save dialog
   ipcMain.handle('show-save-dialog', async (event, options) => {
     if (!mainWindow) return { canceled: true };
@@ -127,6 +197,94 @@ function setupIpcHandlers() {
       return { canceled: true, error: error.message };
     }
   });
+  
+  // Show directory picker
+  ipcMain.handle('select-directory', async (event, defaultPath) => {
+    if (!mainWindow) return { canceled: true };
+    
+    try {
+      const result = await dialog.showOpenDialog(mainWindow, {
+        title: 'Select Output Directory',
+        defaultPath: defaultPath || app.getPath('downloads'),
+        properties: ['openDirectory', 'createDirectory']
+      });
+      
+      return result;
+    } catch (error) {
+      console.error('Error showing directory picker:', error);
+      return { canceled: true, error: error.message };
+    }
+  });
+  
+  // Save file to disk
+  ipcMain.handle('save-file', async (event, { filePath, fileName, data }) => {
+    try {
+      // Ensure the output directory exists
+      await fs.mkdir(filePath, { recursive: true });
+      
+      // Create the full file path
+      const fullPath = path.join(filePath, fileName);
+      
+      // Convert the array back to a Uint8Array
+      const uint8Array = new Uint8Array(data);
+      
+      // Write the file
+      await fs.writeFile(fullPath, uint8Array);
+      
+      return { success: true, filePath: fullPath };
+    } catch (error) {
+      console.error('Error saving file:', error);
+      return { success: false, error: error.message };
+    }
+  });
+  
+  // Get preference
+  ipcMain.handle('get-preference', async (event, key) => {
+    try {
+      const preferences = await getPreferences();
+      return preferences[key];
+    } catch (error) {
+      console.error('Error getting preference:', error);
+      return null;
+    }
+  });
+  
+  // Set preference
+  ipcMain.handle('set-preference', async (event, key, value) => {
+    try {
+      const preferences = await getPreferences();
+      preferences[key] = value;
+      await savePreferences(preferences);
+      return { success: true };
+    } catch (error) {
+      console.error('Error setting preference:', error);
+      return { success: false, error: error.message };
+    }
+  });
+  
+  // Helper function to get preferences
+  async function getPreferences() {
+    try {
+      const preferencesPath = path.join(app.getPath('userData'), 'preferences.json');
+      const data = await fs.readFile(preferencesPath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      // If file doesn't exist or is invalid, return default preferences
+      return {};
+    }
+  }
+  
+  // Helper function to save preferences
+  async function savePreferences(preferences) {
+    try {
+      const preferencesPath = path.join(app.getPath('userData'), 'preferences.json');
+      await fs.writeFile(preferencesPath, JSON.stringify(preferences, null, 2), 'utf-8');
+      return true;
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      throw error;
+    }
+  }
   
   // Merge PDFs handler
   ipcMain.handle('merge-pdfs', async (event, { filePaths, outputPath }) => {

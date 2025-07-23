@@ -7,12 +7,24 @@ A lightweight, AI-assisted Windows desktop application for PDF manipulation buil
 
 ## 📋 Features
 
-- Merge multiple PDFs into one
-- Split PDFs into multiple files
-- Compress PDFs to reduce file size
-- Convert PDFs to JPG images
-- Convert JPG/PNG images to PDF
-- Convert PDFs to Word documents
+### PDF Merger
+- Merge multiple PDFs into a single document
+- Drag-and-drop interface for easy file selection
+- Reorder pages before merging
+
+### PDF Splitter
+- Extract single pages or page ranges
+- Split PDF into individual pages
+- Custom output directory selection
+- Persistent storage of preferred save location
+- Progress tracking during processing
+- Fallback to client-side processing when needed
+
+### Coming Soon
+- PDF compression
+- PDF to JPG conversion
+- JPG/PNG to PDF conversion
+- PDF to Word conversion
 
 ## 🚀 Getting Started
 

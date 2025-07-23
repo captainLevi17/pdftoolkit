@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDF Toolkit</title>
+  <!-- PDF.js worker configuration -->
+  <script>
+    // Set PDF.js worker path
+    window.pdfjsWorker = null;
+    window.pdfjsLib = {
+      GlobalWorkerOptions: {}
+    };
+  </script>
   <link rel="stylesheet" href="./css/styles.css">
   <link rel="stylesheet" href="./css/output.css">
   <style>
@@ -43,7 +51,7 @@
           <p class="text-gray-600 dark:text-gray-400">Combine multiple PDFs into a single file</p>
         </div>
 
-        <div class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div id="split-pdf" class="tool-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
           <div class="text-4xl mb-4">✂️</div>
           <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Split PDF</h2>
           <p class="text-gray-600 dark:text-gray-400">Extract pages or split by page numbers</p>

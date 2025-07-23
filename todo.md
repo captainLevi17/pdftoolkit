@@ -31,7 +31,14 @@
   - [x] Progress tracking
   - [x] Error handling
   - [x] Open merged PDF directly
-- [ ] Build PDF Splitter (extract selected pages)
+- [x] Build PDF Splitter (extract selected pages)
+  - [x] Extract single pages or page ranges
+  - [x] Split PDF into individual pages
+  - [x] Custom output directory selection
+  - [x] Persistent storage of preferred save location
+  - [x] Progress tracking during processing
+  - [x] Fallback to client-side processing
+  - [x] Enhanced success/error notifications
 - [ ] Add PDF Compressor (optimize file size)
 - [ ] Create PDF to JPG converter
 - [ ] Build JPG to PDF converter
@@ -39,14 +46,14 @@
 
 ---
 
-## ✅ Phase 4: UI Integration & User Experience (PDF Merger)
-- [x] Connect PDF Merger button to its function
+## ✅ Phase 4: UI Integration & User Experience (Completed for Merger & Splitter)
+- [x] Connect PDF Merger/Splitter buttons to their functions
 - [x] Add file picker with multi-file support
 - [x] Implement drag-and-drop file upload
-- [x] Display progress bar during merge
-- [x] Show success/error alerts with feedback
-- [x] Add "Open File" button for merged PDFs
-- [ ] Save last-used folders or settings
+- [x] Display progress bar during operations
+- [x] Show enhanced success/error notifications with smooth animations
+- [x] Add "Open File" button for merged/split PDFs
+- [x] Save last-used output directories
 - [ ] Add file preview thumbnails (future enhancement)
 
 ---
@@ -54,9 +61,11 @@
 ## 🚧 Phase 5: Security Audit & Hardening
 - [x] Enable contextIsolation in Electron
 - [x] Disable nodeIntegration in renderer
-- [ ] Validate all file inputs
-- [ ] Prevent directory traversal
-- [ ] Run `npm audit` and patch vulnerabilities
+- [x] Validate all file inputs in PDF Splitter
+- [x] Prevent directory traversal in file operations
+- [x] Run `npm audit` and patch vulnerabilities
+- [x] Implement secure IPC communication for file operations
+- [x] Add input sanitization for page numbers and paths
 
 ---
 
