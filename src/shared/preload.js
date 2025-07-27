@@ -11,10 +11,12 @@ const validChannels = {
     'show-error-dialog',
     'show-success-dialog',
     'open-file',
+    'open-folder',
     'get-page-count',
     'split-pdf',
     'select-directory',
     'save-file',
+    'save-file-to-path',
     'get-preference',
     'set-preference'
   ]

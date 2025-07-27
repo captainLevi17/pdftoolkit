@@ -5,6 +5,23 @@ All notable changes to the PDF Toolkit project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-07-28
+### Added
+- PDF Compressor feature with adjustable compression levels (low, medium, high)
+- Support for customizing compression settings (image quality, metadata removal, DPI settings)
+- Client-side PDF processing using PDF.js and pdf-lib
+- Progress tracking during PDF compression with visual feedback
+- File size comparison between original and compressed PDF
+- Option to open or locate the compressed file after processing
+- Persistent storage of compression settings and preferences
+- Responsive UI with dark mode support
+- Support for both drag-and-drop and file selection
+- Detailed error handling and user feedback
+- Fallback mechanisms for different compression scenarios
+- Support for image-heavy PDFs with configurable DPI settings
+- Automatic cleanup of temporary files
+- Integration with system file explorer for opening files/folders
+
 ## [0.4.0] - 2025-07-23
 ### Added
 - PDF Splitter feature with page range selection

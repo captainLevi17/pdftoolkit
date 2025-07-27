@@ -20,8 +20,17 @@ A lightweight, AI-assisted Windows desktop application for PDF manipulation buil
 - Progress tracking during processing
 - Fallback to client-side processing when needed
 
+### PDF Compressor
+- Reduce PDF file size with three compression levels (low, medium, high)
+- Customize image quality and DPI settings
+- Remove metadata for additional size reduction
+- Process image-heavy PDFs efficiently
+- Real-time progress tracking
+- Compare original and compressed file sizes
+- Open or locate compressed files directly
+- Persistent compression preferences
+
 ### Coming Soon
-- PDF compression
 - PDF to JPG conversion
 - JPG/PNG to PDF conversion
 - PDF to Word conversion

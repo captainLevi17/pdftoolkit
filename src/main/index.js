@@ -1,8 +1,13 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
+const { exec } = require('child_process');
+const util = require('util');
 const { PDFDocument } = require('pdf-lib');
 const PDFUtils = require('../utils/pdfUtils');
+
+// Promisify exec for async/await
+const execAsync = util.promisify(require('child_process').exec);
 
 // Simple error handling for uncaught exceptions
 process.on('uncaughtException', (error) => {
@@ -216,8 +221,120 @@ function setupIpcHandlers() {
     }
   });
   
-  // Save file to disk
+  // Get system's temporary directory
+  ipcMain.handle('get-temp-dir', () => {
+    return app.getPath('temp');
+  });
+
+  // Get file stats
+  ipcMain.handle('get-file-stats', async (event, { filePath }) => {
+    try {
+      const stats = await fs.stat(filePath);
+      return { size: stats.size, mtime: stats.mtime };
+    } catch (error) {
+      console.error('Error getting file stats:', error);
+      throw new Error(`Failed to get file stats: ${error.message}`);
+    }
+  });
+
+  // Delete a file
+  ipcMain.handle('delete-file', async (event, { filePath }) => {
+    try {
+      await fs.unlink(filePath);
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      return { success: false, error: error.message };
+    }
+  });
+
+  // Check if Ghostscript is available
+  ipcMain.handle('check-ghostscript', async () => {
+    const gsCommand = process.platform === 'win32' ? 'gswin64c' : 'gs';
+    
+    try {
+      const { stdout } = await execAsync(`${gsCommand} --version`);
+      const version = stdout.trim();
+      return { available: true, version };
+    } catch (error) {
+      console.error('Ghostscript not found:', error);
+      return { 
+        available: false, 
+        error: 'Ghostscript is not installed or not in system PATH',
+        help: 'Please install Ghostscript from https://ghostscript.com/releases/gsdnld.html'
+      };
+    }
+  });
+
+  // Execute Ghostscript command
+  ipcMain.handle('execute-ghostscript', async (event, { options }) => {
+    return new Promise((resolve, reject) => {
+      // Find Ghostscript executable
+      const gsCommand = process.platform === 'win32' ? 'gswin64c' : 'gs';
+      
+      // Execute Ghostscript
+      const gsProcess = exec(
+        `${gsCommand} ${options.join(' ')}`,
+        { maxBuffer: 1024 * 1024 * 10 }, // 10MB buffer
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error('Ghostscript error:', { error, stdout, stderr });
+            reject(new Error(`Ghostscript failed: ${error.message}\n${stderr}`));
+            return;
+          }
+          resolve({ success: true, stdout, stderr });
+        }
+      );
+      
+      // Handle process exit
+      gsProcess.on('exit', (code) => {
+        if (code !== 0) {
+          reject(new Error(`Ghostscript process exited with code ${code}`));
+        }
+      });
+    });
+  });
+
+  // Save file to disk (legacy, for backward compatibility)
   ipcMain.handle('save-file', async (event, { filePath, fileName, data }) => {
+    try {
+      // Ensure the output directory exists
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      
+      // Convert the array back to a Uint8Array if it's an array
+      const uint8Array = Array.isArray(data) ? new Uint8Array(data) : data;
+      
+      // Write the file
+      await fs.writeFile(path.join(filePath, fileName), uint8Array);
+      
+      return { success: true, filePath: path.join(filePath, fileName) };
+    } catch (error) {
+      console.error('Error saving file:', error);
+      return { success: false, error: error.message };
+    }
+  });
+  
+  // Save file to specific path (new version)
+  ipcMain.handle('save-file-to-path', async (event, { filePath, data }) => {
+    try {
+      // Ensure the output directory exists
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      
+      // Convert the array back to a Uint8Array if it's an array
+      const uint8Array = Array.isArray(data) ? new Uint8Array(data) : data;
+      
+      // Write the file
+      await fs.writeFile(filePath, uint8Array);
+      
+      return { success: true, filePath };
+    } catch (error) {
+      console.error('Error saving file:', error);
+      return { success: false, error: error.message };
+    }
+  });
+  
+  // Save file with dialog (for backward compatibility)
+  ipcMain.handle('save-file-dialog', async (event, { filePath, fileName, data }) => {
     try {
       // Ensure the output directory exists
       await fs.mkdir(filePath, { recursive: true });
@@ -383,6 +500,52 @@ function setupIpcHandlers() {
     } catch (error) {
       console.error('Error opening file:', error);
       return { success: false, message: error.message };
+    }
+  });
+
+  // Open folder in file explorer
+  ipcMain.handle('open-folder', async (event, filePath) => {
+    try {
+      const { shell } = require('electron');
+      const path = require('path');
+      const fs = require('fs').promises;
+      
+      // Normalize the path and ensure it's absolute
+      const normalizedPath = path.normalize(filePath);
+      const absolutePath = path.isAbsolute(normalizedPath) 
+        ? normalizedPath 
+        : path.join(app.getAppPath(), normalizedPath);
+      
+      // Check if the path exists
+      try {
+        await fs.access(absolutePath);
+      } catch (err) {
+        throw new Error(`Path does not exist: ${absolutePath}`);
+      }
+      
+      // Get the directory path if a file is provided
+      const targetPath = (await fs.stat(absolutePath)).isFile() 
+        ? path.dirname(absolutePath)
+        : absolutePath;
+      
+      console.log('Opening folder for:', absolutePath);
+      console.log('Target folder:', targetPath);
+      
+      // First try showItemInFolder for better integration
+      const success = shell.showItemInFolder(absolutePath);
+      
+      if (!success) {
+        // Fallback to openPath if showItemInFolder fails
+        await shell.openPath(targetPath);
+      }
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Error opening folder:', error);
+      return { 
+        success: false, 
+        message: `Failed to open folder: ${error.message}` 
+      };
     }
   });
   

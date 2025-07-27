@@ -6,6 +6,7 @@ const toolViews = document.getElementById('tool-views');
 // Import components using dynamic import
 let PDFMerger;
 let PDFSplitter;
+let PDFCompressor;
 
 // Navigation state
 let currentView = 'home';
@@ -98,6 +99,46 @@ async function initPDFMerger() {
   }
 }
 
+// Initialize the PDF Compressor UI
+async function initPDFCompressor() {
+  try {
+    // Dynamically import the PDFCompressor component
+    const PDFCompressorModule = await import('./components/PDFCompressor.js');
+    PDFCompressor = PDFCompressorModule.default;
+    
+    // Create PDF Compressor instance and render it
+    const pdfCompressor = new PDFCompressor();
+    const pdfCompressorElement = pdfCompressor.render();
+    
+    // Set current tool
+    currentTool = 'compress';
+    
+    // Clear any existing content and append the PDF Compressor UI
+    toolViews.innerHTML = '';
+    toolViews.appendChild(pdfCompressorElement);
+    
+    // Add back button
+    addBackButton();
+    
+    // Add theme toggle if it exists
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+    }
+  } catch (error) {
+    console.error('Error initializing PDF Compressor:', error);
+    appContainer.innerHTML = `
+      <div class="p-6 text-center">
+        <h2 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">Error Initializing PDF Compressor</h2>
+        <p class="text-gray-700 dark:text-gray-300">${error.message}</p>
+        <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+          Reload Application
+        </button>
+      </div>
+    `;
+  }
+}
+
 // Toggle between light and dark theme
 function toggleTheme() {
   try {
@@ -133,6 +174,8 @@ async function showToolView(toolName) {
       await initPDFMerger();
     } else if (toolName.toLowerCase() === 'split pdf' || toolName === 'split') {
       await initPDFSplitter();
+    } else if (toolName.toLowerCase() === 'compress pdf' || toolName === 'compress') {
+      await initPDFCompressor();
     }
     // Add other tool initializations here
     
@@ -190,6 +233,13 @@ async function init() {
     if (splitPdfCard) {
       splitPdfCard.addEventListener('click', async () => {
         await showToolView('split');
+      });
+    }
+    
+    const compressPdfCard = document.getElementById('compress-pdf');
+    if (compressPdfCard) {
+      compressPdfCard.addEventListener('click', async () => {
+        await showToolView('compress');
       });
     }
     

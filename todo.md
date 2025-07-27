@@ -39,7 +39,15 @@
   - [x] Progress tracking during processing
   - [x] Fallback to client-side processing
   - [x] Enhanced success/error notifications
-- [ ] Add PDF Compressor (optimize file size)
+- [x] Add PDF Compressor (optimize file size)
+  - [x] Multiple compression levels (low, medium, high)
+  - [x] Customizable image quality
+  - [x] Option to remove metadata
+  - [x] Option to downsample images
+  - [x] Progress tracking
+  - [x] File size comparison
+  - [x] Open/save options for compressed file
+  - [x] Persistent settings storage
 - [ ] Create PDF to JPG converter
 - [ ] Build JPG to PDF converter
 - [ ] Integrate PDF to Word export (use external tools/API if needed)
