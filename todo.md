@@ -18,9 +18,9 @@
   - [x] PDF Merger
   - [x] PDF Splitter
   - [x] PDF Compressor
-  - [x] PDF to JPG
-  - [x] JPG to PDF
-  - [x] PDF to Word
+  - [ ] PDF to JPG
+  - [] JPG to PDF
+  - [] PDF to Word
 
 ---
 
@@ -28,6 +28,11 @@
 - [x] Implement PDF Merger (using `pdf-lib`)
   - [x] Drag-and-drop file upload
   - [x] File reordering and removal
+- [ ] Implement PDF to JPG Conversion
+  - [ ] Add file selection
+  - [ ] Add quality settings
+  - [ ] Add output format options (JPG, PNG, etc.)
+  - [ ] Implement conversion logic
   - [x] Progress tracking
   - [x] Error handling
   - [x] Open merged PDF directly
