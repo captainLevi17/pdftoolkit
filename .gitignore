@@ -35,8 +35,8 @@ yarn-error.log*
 *.sw?
 
 # Tailwind CSS
-tailwind.config.js
-postcss.config.js
+# tailwind.config.js
+# postcss.config.js
 
 # Output CSS
 src/renderer/css/output.css

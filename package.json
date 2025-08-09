@@ -5,7 +5,7 @@
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
-    "dev": "concurrently \"npm run watch:css\" \"electron .\"",
+    "dev": "concurrently \"npm run watch:css\" \"electron . --no-sandbox\"",
     "watch:css": "tailwindcss -i ./src/renderer/css/styles.css -o ./src/renderer/css/output.css --watch",
     "build:css": "tailwindcss -i ./src/renderer/css/styles.css -o ./src/renderer/css/output.css --minify",
     "build": "npm run build:css && electron-builder",
