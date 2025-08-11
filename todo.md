@@ -18,7 +18,7 @@
   - [x] PDF Merger
   - [x] PDF Splitter
   - [x] PDF Compressor
-  - [ ] PDF to JPG
+  - [x] PDF to JPG
   - [] JPG to PDF
   - [] PDF to Word
 
@@ -28,14 +28,14 @@
 - [x] Implement PDF Merger (using `pdf-lib`)
   - [x] Drag-and-drop file upload
   - [x] File reordering and removal
-- [ ] Implement PDF to JPG Conversion
-  - [ ] Add file selection
-  - [ ] Add quality settings
-  - [ ] Add output format options (JPG, PNG, etc.)
-  - [ ] Implement conversion logic
-  - [x] Progress tracking
-  - [x] Error handling
-  - [x] Open merged PDF directly
+- [x] Implement PDF to JPG Conversion (Completed on 2025-08-11)
+  - [x] Add file selection
+  - [x] Add quality settings (DPI)
+  - [x] Add output format options (JPG, PNG)
+  - [x] Implement conversion logic using Ghostscript
+  - [x] Show progress/loading state
+  - [x] Add robust error handling
+  - [x] Add "Open Folder" button on success
 - [x] Build PDF Splitter (extract selected pages)
   - [x] Extract single pages or page ranges
   - [x] Split PDF into individual pages
@@ -53,7 +53,7 @@
   - [x] File size comparison
   - [x] Open/save options for compressed file
   - [x] Persistent settings storage
-- [ ] Create PDF to JPG converter
+- [x] Create PDF to JPG converter
 - [ ] Build JPG to PDF converter
 - [ ] Integrate PDF to Word export (use external tools/API if needed)
 
