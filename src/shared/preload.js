@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 // Whitelist of valid channels for IPC communication
 const validChannels = {
-  send: ['toMain', 'merge-progress', 'split-progress'],
+  send: ['toMain', 'merge-progress', 'split-progress', 'open-folder'],
   receive: ['fromMain', 'merge-progress', 'split-progress'],
   invoke: [
     'ping',
@@ -11,14 +11,14 @@ const validChannels = {
     'show-error-dialog',
     'show-success-dialog',
     'open-file',
-    'open-folder',
     'get-page-count',
     'split-pdf',
     'select-directory',
     'save-file',
     'save-file-to-path',
     'get-preference',
-    'set-preference'
+    'set-preference',
+    'convert-pdf-to-images' // Added for PDF to Image conversion
   ]
 };
 

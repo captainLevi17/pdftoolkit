@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
 const { exec } = require('child_process');
@@ -267,6 +267,91 @@ function setupIpcHandlers() {
   });
 
   // Execute Ghostscript command
+  // PDF to Image Conversion
+  ipcMain.handle('convert-pdf-to-images', async (event, { filePath, format, quality }) => {
+    if (!mainWindow) return { success: false, error: 'Main window not available.' };
+
+    try {
+      // 1. Ask user for output directory
+      const dirResult = await dialog.showOpenDialog(mainWindow, {
+        title: 'Select Output Folder',
+        properties: ['openDirectory', 'createDirectory'],
+      });
+
+      if (dirResult.canceled || !dirResult.filePaths.length) {
+        return { success: false, canceled: true };
+      }
+
+      const outputDir = dirResult.filePaths[0];
+      const pdfFileName = path.basename(filePath, path.extname(filePath));
+      const outputPattern = path.join(outputDir, `${pdfFileName}_page_%d.${format === 'jpeg' ? 'jpg' : 'png'}`);
+      const filePrefix = `${pdfFileName}_page_`;
+
+      // Check for existing files and ask for overwrite confirmation
+      const existingFiles = (await fs.readdir(outputDir)).filter(f => f.startsWith(filePrefix));
+      if (existingFiles.length > 0) {
+        const result = await dialog.showMessageBox(mainWindow, {
+          type: 'warning',
+          buttons: ['Cancel', 'Overwrite'],
+          defaultId: 0,
+          title: 'Confirm Overwrite',
+          message: 'Files with the same name already exist in the output folder.',
+          detail: `Do you want to overwrite ${existingFiles.length} existing file(s)?`,
+        });
+
+        if (result.response === 0) { // Cancel
+          return { success: false, canceled: true };
+        }
+
+        // Overwrite: delete existing files
+        for (const file of existingFiles) {
+          await fs.unlink(path.join(outputDir, file));
+        }
+      }
+
+      // 2. Check for Ghostscript
+      const gsCommand = process.platform === 'win32' ? 'gswin64c' : 'gs';
+      try {
+        await execAsync(`${gsCommand} --version`);
+      } catch (error) {
+        throw new Error('Ghostscript is not installed or not in your system PATH.');
+      }
+
+      // 3. Construct and run Ghostscript command
+      const device = format === 'jpeg' ? 'jpeg' : 'png16m'; // Map format to GS device
+
+      const gsArgs = [
+        '-dSAFER',
+        '-dBATCH',
+        '-dNOPAUSE',
+        `-sDEVICE=${device}`,
+        `-r${quality}`,
+        `-o"${outputPattern}"`,
+        `"${filePath}"`,
+      ];
+
+      await execAsync(`${gsCommand} ${gsArgs.join(' ')}`);
+
+      // 4. Count the newly generated images
+      const filesAfter = await fs.readdir(outputDir);
+      const imageCount = filesAfter.filter(f => f.startsWith(filePrefix) && (f.endsWith('.jpg') || f.endsWith('.png'))).length;
+
+      return { success: true, outputDir, imageCount };
+    } catch (error) {
+      console.error('Error converting PDF to images:', error);
+      return { success: false, error: error.message || 'An unknown error occurred during conversion.' };
+    }
+  });
+
+  // Open a folder in the file explorer
+  ipcMain.on('open-folder', (event, folderPath) => {
+    if (folderPath) {
+      shell.openPath(folderPath).catch(err => {
+        console.error(`Failed to open folder: ${folderPath}`, err);
+      });
+    }
+  });
+
   ipcMain.handle('execute-ghostscript', async (event, { options }) => {
     return new Promise((resolve, reject) => {
       // Find Ghostscript executable

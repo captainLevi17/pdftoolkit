@@ -51,6 +51,22 @@
 - Export each page as separate high-quality JPG images
 - Choose output folder
 
+#### 4.1. User Interface & Experience
+- **File Input**: A clear 'Select PDF' button and a drag-and-drop area.
+- **Preview**: Display the name of the selected file. A thumbnail preview is a future enhancement.
+- **Options**:
+  - **Output Format**: A dropdown to select between JPG and PNG.
+  - **Quality/Resolution**: A slider or dropdown for quality settings (e.g., Low - 150 DPI, Medium - 300 DPI, High - 600 DPI).
+- **Action Button**: A 'Convert' button that becomes active only after a file is selected.
+- **Progress**: A progress bar showing the conversion status, especially for multi-page documents.
+- **Output**: A confirmation message with a button to open the output folder.
+
+#### 4.2. Backend & Logic
+- **IPC Channel**: An IPC channel (`convert-pdf-to-images`) will be established between the renderer and main processes.
+- **Conversion Engine**: Use a robust library like **Ghostscript** for reliable, high-quality PDF-to-image conversion. This is preferred over pure JS solutions for performance and quality.
+- **File Handling**: The main process will handle the file path, execute the conversion, and save the images to the user-specified directory.
+- **Error Handling**: Provide clear feedback for common errors (e.g., corrupted PDF, Ghostscript not found, write permissions error).
+
 ### 5. JPG to PDF
 - Select one or more JPG/PNG images
 - Reorder before converting
@@ -130,4 +146,3 @@
 ---
 
 ## 📂 File Structure (Planned)
-

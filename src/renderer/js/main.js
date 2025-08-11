@@ -1,12 +1,21 @@
 // DOM Elements
+import PDFMerger from './components/PDFMerger.js';
+import PDFSplitter from './components/PDFSplitter.js';
+import PDFCompressor from './components/PDFCompressor.js';
+import PDFToJPG from './components/PDFToJPG.js';
+
+// DOM Elements
 const appContainer = document.getElementById('app');
 const homeView = document.getElementById('home-view');
 const toolViews = document.getElementById('tool-views');
 
-// Import components using dynamic import
-let PDFMerger;
-let PDFSplitter;
-let PDFCompressor;
+// Tool Registry
+const toolRegistry = {
+  'pdf-merger': { component: PDFMerger, name: 'PDF Merger' },
+  'pdf-splitter': { component: PDFSplitter, name: 'PDF Splitter' },
+  'pdf-compressor': { component: PDFCompressor, name: 'PDF Compressor' },
+  'pdf-to-jpg': { component: PDFToJPG, name: 'PDF to JPG' },
+};
 
 // Navigation state
 let currentView = 'home';
@@ -26,118 +35,7 @@ function initTheme() {
   }
 }
 
-// Initialize the PDF Splitter UI
-async function initPDFSplitter() {
-  try {
-    // Dynamically import the PDFSplitter component
-    const PDFSplitterModule = await import('./components/PDFSplitter.js');
-    PDFSplitter = PDFSplitterModule.default;
-    
-    // Create PDF Splitter instance and get its element
-    const pdfSplitter = new PDFSplitter();
-    const pdfSplitterElement = pdfSplitter.render();
-    
-    // Set current tool
-    currentTool = 'split';
-    
-    // Clear any existing content and append the PDF Splitter UI
-    toolViews.innerHTML = '';
-    toolViews.appendChild(pdfSplitterElement);
-    
-    // Add back button
-    addBackButton();
-    
-    // Add theme toggle if it exists
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-      toolViews.appendChild(themeToggle);
-    }
-    
-  } catch (error) {
-    console.error('Error initializing PDF Splitter:', error);
-    alert('Failed to load PDF Splitter. Please check the console for details.');
-  }
-}
 
-// Initialize the PDF Merger UI
-async function initPDFMerger() {
-  try {
-    // Dynamically import the PDFMerger component
-    const PDFMergerModule = await import('./components/PDFMerger.js');
-    PDFMerger = PDFMergerModule.default;
-    
-    // Create PDF Merger instance and get its element
-    const pdfMerger = new PDFMerger();
-    const pdfMergerElement = pdfMerger.render();
-    
-    // Set current tool
-    currentTool = 'merge';
-    
-    // Clear any existing content and append the PDF Merger UI
-    toolViews.innerHTML = '';
-    toolViews.appendChild(pdfMergerElement);
-    
-    // Add back button
-    addBackButton();
-    
-    // Add theme toggle if it exists
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', toggleTheme);
-    }
-  } catch (error) {
-    console.error('Error initializing PDF Merger:', error);
-    appContainer.innerHTML = `
-      <div class="p-6 text-center">
-        <h2 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">Error Initializing PDF Merger</h2>
-        <p class="text-gray-700 dark:text-gray-300">${error.message}</p>
-        <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-          Reload Application
-        </button>
-      </div>
-    `;
-  }
-}
-
-// Initialize the PDF Compressor UI
-async function initPDFCompressor() {
-  try {
-    // Dynamically import the PDFCompressor component
-    const PDFCompressorModule = await import('./components/PDFCompressor.js');
-    PDFCompressor = PDFCompressorModule.default;
-    
-    // Create PDF Compressor instance and render it
-    const pdfCompressor = new PDFCompressor();
-    const pdfCompressorElement = pdfCompressor.render();
-    
-    // Set current tool
-    currentTool = 'compress';
-    
-    // Clear any existing content and append the PDF Compressor UI
-    toolViews.innerHTML = '';
-    toolViews.appendChild(pdfCompressorElement);
-    
-    // Add back button
-    addBackButton();
-    
-    // Add theme toggle if it exists
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', toggleTheme);
-    }
-  } catch (error) {
-    console.error('Error initializing PDF Compressor:', error);
-    appContainer.innerHTML = `
-      <div class="p-6 text-center">
-        <h2 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">Error Initializing PDF Compressor</h2>
-        <p class="text-gray-700 dark:text-gray-300">${error.message}</p>
-        <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-          Reload Application
-        </button>
-      </div>
-    `;
-  }
-}
 
 // Toggle between light and dark theme
 function toggleTheme() {
@@ -163,25 +61,32 @@ function showHomeView() {
 }
 
 // Show tool view
-async function showToolView(toolName) {
+async function showToolView(toolId) {
+  const toolInfo = toolRegistry[toolId];
+  if (!toolInfo) {
+    console.error(`Tool with ID '${toolId}' not found.`);
+    showHomeView();
+    return;
+  }
+
   try {
     currentView = 'tool';
+    currentTool = toolId;
     homeView.classList.add('hidden');
+
+    const ToolComponent = toolInfo.component;
+    const toolInstance = new ToolComponent();
+    const toolElement = toolInstance.render();
+
+    toolViews.innerHTML = '';
+    toolViews.appendChild(toolElement);
+    addBackButton();
     toolViews.classList.remove('hidden');
-    
-    // Initialize the appropriate tool
-    if (toolName.toLowerCase() === 'merge pdf' || toolName === 'merge') {
-      await initPDFMerger();
-    } else if (toolName.toLowerCase() === 'split pdf' || toolName === 'split') {
-      await initPDFSplitter();
-    } else if (toolName.toLowerCase() === 'compress pdf' || toolName === 'compress') {
-      await initPDFCompressor();
-    }
-    // Add other tool initializations here
-    
+    document.title = `${toolInfo.name} - PDF Toolkit`;
+
   } catch (error) {
-    console.error(`Error showing ${toolName} view:`, error);
-    alert(`Failed to load ${toolName} tool. Please try again.`);
+    console.error(`Error showing ${toolInfo.name} view:`, error);
+    alert(`Failed to load ${toolInfo.name} tool. Please try again.`);
     showHomeView();
   }
 }
@@ -210,38 +115,14 @@ async function init() {
     // Set up navigation
     document.querySelectorAll('.tool-card').forEach(card => {
       card.addEventListener('click', () => {
-        const toolName = card.id.replace('-', ' ');
-        showToolView(toolName);
+        const toolId = card.id;
+        if (toolRegistry[toolId]) {
+          showToolView(toolId);
+        } else {
+          console.warn(`No tool registered for ID: ${toolId}`)
+        }
       });
     });
-    
-    // Set up back button
-    const backButton = document.getElementById('backButton');
-    if (backButton) {
-      backButton.addEventListener('click', showHomeView);
-    }
-    
-    // Initialize tools when their cards are clicked
-    const mergePdfCard = document.getElementById('merge-pdf');
-    if (mergePdfCard) {
-      mergePdfCard.addEventListener('click', async () => {
-        await showToolView('merge');
-      });
-    }
-    
-    const splitPdfCard = document.getElementById('split-pdf');
-    if (splitPdfCard) {
-      splitPdfCard.addEventListener('click', async () => {
-        await showToolView('split');
-      });
-    }
-    
-    const compressPdfCard = document.getElementById('compress-pdf');
-    if (compressPdfCard) {
-      compressPdfCard.addEventListener('click', async () => {
-        await showToolView('compress');
-      });
-    }
     
     // Show home view by default
     showHomeView();
